@@ -17,7 +17,11 @@
   },
   "homepage": "https://github.com/adamhb123/IOTW-documenter#readme",
   "dependencies": {
+    "@nodegui/nodegui": "^0.47.0",
     "prompt-sync": "^4.2.0",
     "prompt-sync-history": "^1.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.11.0"
   }
 }

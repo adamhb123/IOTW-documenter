@@ -13,10 +13,10 @@ import _prompt_sync_history = require('prompt-sync-history');
 * START 'CONSTANTS'
 ************************************************************************
 */
-
 // Configurables
 const DOC_SPACING = 23;
 const DOC_SECTION_BORDER_LENGTH = 72;
+const INPUT_AUTOWRAP = 50; // Character count to wrap at
 
 // Untouchables (well, you should not-touch-ables)
 const _DNE = -69;
@@ -24,7 +24,6 @@ const _INVALID_ARGUMENT_COUNT = -68;
 const _ERR_MAP: Record<string, string> = {};
 _ERR_MAP[_DNE] = 'DOES NOT EXIST'; 
 _ERR_MAP[_INVALID_ARGUMENT_COUNT] = 'NOT ENOUGH ARGUMENTS'; 
-
 /*
 ************************************************************************
 * END 'CONSTANTS'
@@ -37,7 +36,6 @@ _ERR_MAP[_INVALID_ARGUMENT_COUNT] = 'NOT ENOUGH ARGUMENTS';
 * START 'DOCSTRING TEMPLATES'
 ************************************************************************
 */
-
 // String replacements:
 // <METHOD> <NAME> <QUERY PARAMETERS> <RETURN>
 const _API_ROUTE_DOCSTRING = `/** API ROUTE DEFINITION
@@ -45,17 +43,18 @@ const _API_ROUTE_DOCSTRING = `/** API ROUTE DEFINITION
 * NAME:                 %s
 * QUERY PARAMETERS:
 *                       %s
+* 
 * RETURN:               %s
 */`;
 
 // String replacements:
-// <DESCRIPTION> <ACCESS SCOPE> <ARGUMENTS> <RETURN>
+// <DESCRIPTION> <ARGUMENTS> <RETURN>
 const _FUNCTION_DOCSTRING = `/**
 * %s
 * 
-* ACCESS SCOPE:         %s
 * ARGUMENTS:
 *                       %s
+* 
 * RETURN:               %s
 */`;
 
@@ -74,13 +73,18 @@ ${'*'.repeat(DOC_SECTION_BORDER_LENGTH)}
 * END '%s'
 ${'*'.repeat(DOC_SECTION_BORDER_LENGTH)}
 */`;
-
 /*
 ************************************************************************
 * END 'DOCSTRING TEMPLATES'
 ************************************************************************
 */
 
+
+/*
+************************************************************************
+* START 'MISC PARSING'
+************************************************************************
+*/
 type ParseFunction = (...args: string[]) => string | void;
 function _parse_input_string(input_string: string) : string[] {
     const parsed: string[] = [];
@@ -106,12 +110,24 @@ function _parse_input_string(input_string: string) : string[] {
     return parsed;
 }
 
-function generate_section_doc(name: string) : string {
+/*
+************************************************************************
+* END 'MISC PARSING'
+************************************************************************
+*/
+
+
+/*
+************************************************************************
+* START 'DOCUMENTATION GENERATION FUNCTIONS'
+************************************************************************
+*/
+export function generate_section_doc(name: string) : string {
     return util.format(_START_SECTION_DOCSTRING, name) + '\n' +
     util.format(_END_SECTION_DOCSTRING, name);
 }
 
-function generate_api_route_doc(method: string, route_uri: string, param_string?: string, returns?: string) : string {
+export function generate_api_route_doc(method: string, route_uri: string, param_string?: string, returns?: string) : string {
     let formatted_param_string = '';
     if (typeof param_string !== 'undefined' && param_string.length > 0){
         const param_string_arr = param_string.split(',');
@@ -132,7 +148,7 @@ function generate_api_route_doc(method: string, route_uri: string, param_string?
     );
 }
 
-function generate_function_doc(description: string, access_scope: string, arg_string?: string, returns?: string) : string {
+export function generate_function_doc(description: string, arg_string?: string, returns?: string) : string {
     let formatted_arg_string = '';
     if (typeof arg_string !== 'undefined' && arg_string.length > 0){
         const arg_string_arr = arg_string.split(',');
@@ -147,13 +163,22 @@ function generate_function_doc(description: string, access_scope: string, arg_st
     return util.format(
         _FUNCTION_DOCSTRING,
         description,
-        access_scope,
         formatted_arg_string,
         return_str
     );
 }
+/*
+************************************************************************
+* END 'DOCUMENTATION GENERATION FUNCTIONS'
+************************************************************************
+*/
 
-// Interactable CLI
+
+/*
+************************************************************************
+* START 'MISC CLI'
+************************************************************************
+*/
 class CLICommand {
     readonly identifier: string;
     readonly callback: ParseFunction
@@ -183,13 +208,20 @@ class CLICommand {
 
 function _get_help() : string {
     return (
-        `Help Menu:    
+        `Help Menu:
+        TIP #1: If you want to use spaces for a particular parameter, wrap your
+        entry with quotation marks (see Ex. 2a)
+        TIP #2: For parameters allowing multiple entries (i.e. <QUERY PARAMETERS>),
+        separate each parameter with a comma.
+            Ex. 2a: 
+                "string - string to do things with,name - your name" etc... 
+        
         Commands:
             <command accessors> | <arguments>                
             api, route | <METHOD> <ROUTE> <QUERY PARAMETERS> <RETURN>
                 Generates documentation for the described API route
                 RETURN: the generated documentation, as a string
-            function, func | <DESCRIPTION> <ACCESS SCOPE> <ARGUMENTS> <RETURN>
+            function, func | <DESCRIPTION> <ARGUMENTS> <RETURN>
                 Generates documentation for the described function
                 RETURN: the generated documentation, as a string
             section, sect | <NAME>
@@ -216,8 +248,14 @@ const _CLI_COMMAND_LIST: CLICommand[] = [
     new CLICommand('quit', _quit_cli, true), new CLICommand('q', _quit_cli)
 ];
 
+// CLI Utility Functions
 function _clear() : void { console.clear(); }
 function _quit_cli(): void { process.exit(1); }
+/*
+************************************************************************
+* END 'MISC CLI'
+************************************************************************
+*/
 
 function main() : void {
     /**
@@ -253,11 +291,5 @@ function main() : void {
         }
     }
 }
-
-module.exports = {
-    generate_api_route_doc: generate_api_route_doc,
-    generate_function_doc: generate_function_doc,
-    generate_section_doc: generate_section_doc
-};
 
 if (require.main === module) main();
