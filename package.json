@@ -1,0 +1,23 @@
+{
+  "name": "iotw-documenter",
+  "version": "1.0.0",
+  "description": "Documentation utility for IOTW contributors",
+  "main": "documenter.ts",
+  "scripts": {
+    "test": "ts-node documenter.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamhb123/IOTW-documenter.git"
+  },
+  "author": "Adam Brewer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adamhb123/IOTW-documenter/issues"
+  },
+  "homepage": "https://github.com/adamhb123/IOTW-documenter#readme",
+  "dependencies": {
+    "prompt-sync": "^4.2.0",
+    "prompt-sync-history": "^1.0.1"
+  }
+}
