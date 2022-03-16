@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>IOTW Documenter</title>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-xFs3wFDMsuI2n0lKyMq9cctXibydXlGu6UBCeVVyGTg='"/>
+    <link rel="stylesheet" href="./src/bootstrap.min.css">
+    <link rel="stylesheet" href="./src/style.css">
+  </head>
+  <body>
+    <h1>IOTW Documenter</h1>
+    <form>
+      <label for="doctype">Document Type:</label><br>
+      <!-- Document type selection-->
+      <div class="form-group">
+        <select name="doctype" id="doctype">
+          <option value="api-route">API Route</option>
+          <option value="function">Function</option>
+          <option value="section">Section</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <!-- Parameters-->
+        <label for="method">Name:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <label for="method">Method:</label><br>
+        <input type="text" id="method" name="method"><br>
+        <label for="route-uri">Route URI:</label><br>
+        <input type="text" id="route-uri" name="route-uri"><br>
+        <label for="query-parameters">Query Parameters:</label><br>
+        <input type="text" id="query-parameters" name="query-parameters"><br>
+        <label for="arguments">Arguments:</label><br>
+        <input type="text" id="arguments" name="arguments"><br>
+        <label for="return">Return:</label><br>
+        <input type="text" id="return" name="return"><br>
+        <button type="submit" id="submit-docform"></button>
+      </div>
+    </form>
+
+    <script>var exports = {};</script>
+    <script src="./dist/renderer.js"></script>
+  </body>
+</html>

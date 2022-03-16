@@ -16,7 +16,7 @@ import _prompt_sync_history = require('prompt-sync-history');
 // Configurables
 const DOC_SPACING = 23;
 const DOC_SECTION_BORDER_LENGTH = 72;
-const INPUT_AUTOWRAP = 50; // Character count to wrap at
+const INPUT_AUTOWRAP = 50; // Character count to wrap at (not yet implemented)
 
 // Untouchables (well, you should not-touch-ables)
 const _DNE = -69;
@@ -37,13 +37,17 @@ _ERR_MAP[_INVALID_ARGUMENT_COUNT] = 'NOT ENOUGH ARGUMENTS';
 ************************************************************************
 */
 // String replacements:
-// <METHOD> <NAME> <QUERY PARAMETERS> <RETURN>
+// <NAME> <METHOD> <ROUTE URI> <DESCRIPTION> <QUERY PARAMETERS> <RETURN>
 const _API_ROUTE_DOCSTRING = `/** API ROUTE DEFINITION
-* METHOD:               %s
 * NAME:                 %s
+* METHOD:               %s
+* ROUTE URI:            %s
+*
+* %s
+*
 * QUERY PARAMETERS:
 *                       %s
-* 
+*
 * RETURN:               %s
 */`;
 
@@ -51,10 +55,10 @@ const _API_ROUTE_DOCSTRING = `/** API ROUTE DEFINITION
 // <DESCRIPTION> <ARGUMENTS> <RETURN>
 const _FUNCTION_DOCSTRING = `/**
 * %s
-* 
+*
 * ARGUMENTS:
 *                       %s
-* 
+*
 * RETURN:               %s
 */`;
 
@@ -127,7 +131,8 @@ export function generate_section_doc(name: string) : string {
     util.format(_END_SECTION_DOCSTRING, name);
 }
 
-export function generate_api_route_doc(method: string, route_uri: string, param_string?: string, returns?: string) : string {
+// <NAME> <METHOD> <ROUTE URI> <DESCRIPTION> <QUERY PARAMETERS> <RETURN>
+export function generate_api_route_doc(name: string, method: string, route_uri: string, description: string, param_string?: string, returns?: string) : string {
     let formatted_param_string = '';
     if (typeof param_string !== 'undefined' && param_string.length > 0){
         const param_string_arr = param_string.split(',');
@@ -140,9 +145,11 @@ export function generate_api_route_doc(method: string, route_uri: string, param_
     } else throw _INVALID_ARGUMENT_COUNT;
     const return_str = typeof returns !== 'undefined' ? returns : 'None';
     return util.format(
-        _API_ROUTE_DOCSTRING, 
+        _API_ROUTE_DOCSTRING,
+        name,
         method, 
-        route_uri, 
+        route_uri,
+        description,
         formatted_param_string, 
         return_str
     );
@@ -218,7 +225,7 @@ function _get_help() : string {
         
         Commands:
             <command accessors> | <arguments>                
-            api, route | <METHOD> <ROUTE> <QUERY PARAMETERS> <RETURN>
+            api, route | <METHOD> <ROUTE URI> <QUERY PARAMETERS> <RETURN>
                 Generates documentation for the described API route
                 RETURN: the generated documentation, as a string
             function, func | <DESCRIPTION> <ARGUMENTS> <RETURN>
