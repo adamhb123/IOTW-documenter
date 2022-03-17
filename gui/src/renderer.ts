@@ -1,7 +1,7 @@
 // Retrieves element by  id, casts to HTMLInputElement
 const _e_by_id = (id: string) => <HTMLInputElement>document.getElementById(id);
 
-function setup_doctype_delta_hook(): void {
+function setup_doctype_delta_hook() : void {
     const e_doctype =  _e_by_id('doctype');
     e_doctype.addEventListener('change', () => {
         console.log(e_doctype.value);
@@ -16,10 +16,7 @@ function setup_doctype_delta_hook(): void {
         };
 
         const _set_vis = (vis_keys: string[]) => Object.keys(input_elements).
-            forEach (key =>
-                input_elements[key].style.visibility = 
-                vis_keys.includes(key) ? 'visible': 'hidden'
-            );
+            forEach (key => input_elements[key].readOnly = vis_keys.includes(key));
 
         if(e_doctype.value === 'api-route')
             _set_vis(['name', 'method', 'route_uri', 'description',
@@ -33,7 +30,6 @@ function setup_doctype_delta_hook(): void {
 
 function initialize() : void {
     setup_doctype_delta_hook();
-   
 }
 
 initialize();

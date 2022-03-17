@@ -2,6 +2,7 @@
 // It has the same sandbox as a Chrome extension.
 import electron = require('electron');
 const ipcRenderer = electron.ipcRenderer;
+const _e_by_id = (id: string) => <HTMLInputElement>document.getElementById(id);
 
 // Synchronous message emmiter and handler
 //console.log(ipcRenderer.sendSync('synchronous-message', 'sync ping'));
@@ -12,7 +13,7 @@ ipcRenderer.on('asynchronous-reply', (event, arg) => {
 });
 
 // Async message sender
-//ipcRenderer.send('asynchronous-message', 'async ping');
+ipcRenderer.send('asynchronous-message', 'async ping');
 
 window.addEventListener('DOMContentLoaded', () => {
   console.log(document.querySelector('#submit-docform'));

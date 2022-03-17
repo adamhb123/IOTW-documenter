@@ -5,8 +5,8 @@
     <title>IOTW Documenter</title>
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-xFs3wFDMsuI2n0lKyMq9cctXibydXlGu6UBCeVVyGTg='"/>
-    <link rel="stylesheet" href="./src/bootstrap.min.css">
-    <link rel="stylesheet" href="./src/style.css">
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <link rel="stylesheet" href="./style.css">
   </head>
   <body>
     <h1>IOTW Documenter</h1>
@@ -24,6 +24,8 @@
         <!-- Parameters-->
         <label for="method">Name:</label><br>
         <input type="text" id="name" name="name"><br>
+        <label for="method">Description:</label><br>
+        <input type="text" id="description" name="description"><br>
         <label for="method">Method:</label><br>
         <input type="text" id="method" name="method"><br>
         <label for="route-uri">Route URI:</label><br>
@@ -34,11 +36,11 @@
         <input type="text" id="arguments" name="arguments"><br>
         <label for="return">Return:</label><br>
         <input type="text" id="return" name="return"><br>
-        <button type="submit" id="submit-docform"></button>
+        <button type="submit" id="submit-docform">Generate</button>
       </div>
     </form>
 
     <script>var exports = {};</script>
-    <script src="./dist/renderer.js"></script>
+    <script src="../dist/renderer.js"></script>
   </body>
 </html>
