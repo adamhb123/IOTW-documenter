@@ -1,21 +1,20 @@
 {
   "name": "electron-quick-start-typescript",
   "version": "1.0.0",
-  "description": "A minimal Electron application written with Typescript",
+  "description": "GUI for the IOTW documenter",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "start": "npm run build && electron ./dist/main.js"
+    "start": "npm run build && electron ../gui/dist/gui/src/main.js"
   },
-  "repository": "https://github.com/electron/electron-quick-start-typescript",
+  "repository": "https://github.com/adamhb123/IOTW-documenter",
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo",
-    "typescript"
+    "typescript",
+    "GUI",
+    "IOTW",
+    "documenter"
   ],
   "author": "GitHub",
   "license": "CC0-1.0",
@@ -25,6 +24,7 @@
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "electron": "^17.1.2",
+    "electron-reloader": "^1.2.3",
     "eslint": "^7.32.0",
     "typescript": "^4.5.5"
   },

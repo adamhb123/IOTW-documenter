@@ -1,3 +1,45 @@
 body {
-    margin: 5px;
+    margin: 10px;
+}
+
+label {
+    width: 350px !important;
+}
+
+#return-input-container {
+    margin-bottom: 10px;
+}
+
+#primary-container {
+    display: flex;
+}
+
+.column {
+    flex: 50%;
+}
+
+.col-sm-5 {
+    width: 335px !important;
+}
+
+#output-header {
+    margin: 25px 0px 4px 10px;
+}
+
+#output-display-box {
+    padding: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 420px;
+    height: 510px;
+    white-space: pre-line;
+    line-height: 1rem;
+}
+
+.form-control-disabled:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #ff0000;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
 }

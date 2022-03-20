@@ -3,10 +3,10 @@
 * Author: Adam Brewer
 */
 
-// Imports
 import util = require('util');
 import _prompt_sync = require('prompt-sync');
 import _prompt_sync_history = require('prompt-sync-history');
+import { format } from 'path';
 
 /*
 ************************************************************************
@@ -22,7 +22,7 @@ const INPUT_AUTOWRAP = 50; // Character count to wrap at (not yet implemented)
 const _DNE = -69;
 const _INVALID_ARGUMENT_COUNT = -68;
 const _ERR_MAP: Record<string, string> = {};
-_ERR_MAP[_DNE] = 'DOES NOT EXIST'; 
+_ERR_MAP[_DNE] = 'DOES NOT EXIST';
 _ERR_MAP[_INVALID_ARGUMENT_COUNT] = 'NOT ENOUGH ARGUMENTS'; 
 /*
 ************************************************************************
@@ -126,52 +126,73 @@ function _parse_input_string(input_string: string) : string[] {
 * START 'DOCUMENTATION GENERATION FUNCTIONS'
 ************************************************************************
 */
+function _autowrap_string(input: string): string {
+    let splits: string[] = [];
+    for(let i = 0; i < input.length; i += INPUT_AUTOWRAP){
+        splits.push(input.slice(i, i + INPUT_AUTOWRAP));
+    }
+    return splits.join('\n');
+}
+
+function _format_multiline_input(entry: string | string[]) : string {
+    let formatted_entry_string = '';
+    const entry_arr = typeof entry === 'string' ? entry.split(/[\n,]/) : entry;
+    formatted_entry_string = _autowrap_string(entry_arr[0]);
+    if(entry_arr.length > 1){
+        for(let i = 1; i < entry_arr.length; i++){
+            formatted_entry_string += _autowrap_string(`\n*${' '.repeat(DOC_SPACING)}${entry_arr[i]}`);
+        }
+    }
+    return formatted_entry_string;
+}
+
+function _safe_format_verify_multiline_input(entry?: string | string[], fallback_value?: string) : string{
+    return typeof entry !== 'undefined' ? _format_multiline_input(entry) : 
+        (typeof fallback_value !== 'undefined' ? fallback_value : 'None'); 
+}
+
 export function generate_section_doc(name: string) : string {
-    return util.format(_START_SECTION_DOCSTRING, name) + '\n' +
-    util.format(_END_SECTION_DOCSTRING, name);
+    return _safe_format_verify_multiline_input(util.format(_START_SECTION_DOCSTRING, name)) + '\n' +
+        _safe_format_verify_multiline_input(util.format(_END_SECTION_DOCSTRING, name));
 }
 
 // <NAME> <METHOD> <ROUTE URI> <DESCRIPTION> <QUERY PARAMETERS> <RETURN>
-export function generate_api_route_doc(name: string, method: string, route_uri: string, description: string, param_string?: string, returns?: string) : string {
-    let formatted_param_string = '';
-    if (typeof param_string !== 'undefined' && param_string.length > 0){
-        const param_string_arr = param_string.split(',');
-        formatted_param_string = param_string_arr[0];
-        if(param_string_arr.length > 1){
-            for(let i = 1; i < param_string_arr.length; i++){
-                formatted_param_string += `\n*${' '.repeat(DOC_SPACING)}${param_string_arr[i]}`;
-            }
-        }
-    } else throw _INVALID_ARGUMENT_COUNT;
-    const return_str = typeof returns !== 'undefined' ? returns : 'None';
+export function generate_api_route_doc(name: string, method: string,
+    route_uri: string, description: string, query_parameters?: string,
+    returns?: string) : string {
+    if(typeof query_parameters !== 'undefined')
+        query_parameters = _safe_format_verify_multiline_input(query_parameters);
+    else query_parameters = 'None';
+    
+    if(typeof returns !== 'undefined')
+        returns = _safe_format_verify_multiline_input(returns);
+    else returns = 'None';
+    
+    description = _safe_format_verify_multiline_input(description);
+    
+    returns = typeof returns !== 'undefined' ?
+        _safe_format_verify_multiline_input(returns) : 'None';
     return util.format(
         _API_ROUTE_DOCSTRING,
         name,
         method, 
         route_uri,
         description,
-        formatted_param_string, 
-        return_str
+        query_parameters, 
+        returns
     );
 }
 
-export function generate_function_doc(description: string, arg_string?: string, returns?: string) : string {
-    let formatted_arg_string = '';
-    if (typeof arg_string !== 'undefined' && arg_string.length > 0){
-        const arg_string_arr = arg_string.split(',');
-        formatted_arg_string = arg_string_arr[0];
-        if(arg_string_arr.length > 1){
-            for(let i = 1; i < arg_string_arr.length; i++){
-                formatted_arg_string += `\n*${' '.repeat(DOC_SPACING)}${arg_string_arr[i]}`;
-            }
-        }
-    } else throw _INVALID_ARGUMENT_COUNT;
-    const return_str = typeof returns !== 'undefined' ? returns : 'None';
+export function generate_function_doc(description: string, argument_str?: string, returns?: string) : string {
+    if (typeof argument_str !== 'undefined')
+        argument_str = _autowrap_string(_safe_format_verify_multiline_input(argument_str));
+    if (typeof returns !== 'undefined')
+        returns = _autowrap_string(_safe_format_verify_multiline_input(returns));
     return util.format(
         _FUNCTION_DOCSTRING,
         description,
-        formatted_arg_string,
-        return_str
+        argument_str,
+        returns
     );
 }
 /*
@@ -201,7 +222,7 @@ class CLICommand {
     static evoke(command_list: CLICommand[], key: string, args?: string[]) : string | void {
         const command = this.get_by_identifier(command_list, key);
         if(!command) throw _DNE;
-        return command.callback.apply(this, args);
+        return command.callback.apply(this, typeof args !== 'undefined' ? args : []);
     }
     static get_by_identifier(command_list: CLICommand[], identifier: string): CLICommand | void {
         const command = command_list.filter(command => command.identifier === identifier);
@@ -272,7 +293,7 @@ function main() : void {
     const commands: string[] = CLICommand.get_primary_commands(_CLI_COMMAND_LIST).map(command => command.identifier);
     const _prompt = _prompt_sync({
         history: _prompt_sync_history(),
-        autocomplete: (str) => {
+        autocomplete: (str: string) => {
             const ret: string[] = [];
             for (let i = 0; i < commands.length; i++) {
                 if (commands[i].indexOf(str) == 0)
@@ -300,3 +321,9 @@ function main() : void {
 }
 
 if (require.main === module) main();
+
+module.exports = {
+    generate_section_doc: generate_section_doc,
+    generate_api_route_doc: generate_api_route_doc,
+    generate_function_doc: generate_function_doc
+}

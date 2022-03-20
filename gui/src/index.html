@@ -9,38 +9,87 @@
     <link rel="stylesheet" href="./style.css">
   </head>
   <body>
-    <h1>IOTW Documenter</h1>
-    <form>
-      <label for="doctype">Document Type:</label><br>
-      <!-- Document type selection-->
-      <div class="form-group">
-        <select name="doctype" id="doctype">
-          <option value="api-route">API Route</option>
-          <option value="function">Function</option>
-          <option value="section">Section</option>
-        </select>
+    <div id="primary-container">
+      <div id="column">
+        <h1>IOTW Documenter</h1>
+        <form id="primary-form" class="form-horizontal">
+          <label for="doctype">Document Type:</label>
+          <!-- Document type selection-->
+          <div class="form-group">
+            <div id="doctype-input-container">
+              <select name="doctype" id="doctype">
+                <option value="api-route">API Route</option>
+                <option value="function">Function</option>
+                <option value="section">Section</option>
+              </select>
+            </div>
+            
+          </div>
+          <div class="form-group">
+            <!-- Parameters-->
+            <div id="name-input-container">
+              <label class="control-label col-sm-2" for="name">Name:</label>
+              <div class="col-sm-5">
+                <input class="form-control" id="name">
+              </div>  
+            </div>
+            
+            <div id="description-input-container">
+              <label class="control-label col-sm-2" for="description">Description:</label>
+              <div class="col-sm-5">
+                <textarea class="form-control" id="description"></textarea>
+              </div>    
+            </div>
+            
+            <div id="method-input-container">
+              <label class="control-label col-sm-2" for="method">Method:</label>
+              <div class="col-sm-5">
+                <input class="form-control" id="method">
+              </div>
+            </div>
+    
+            <div id="route-uri-input-container">
+              <label class="control-label col-sm-2" for="route-uri">Route URI:</label>
+              <div class="col-sm-5">
+                <input class="form-control" id="route-uri">
+              </div>
+            </div>
+            
+            <div id="query-parameters-input-container">
+              <label class="control-label col-sm-2" for="query-parameters">Query Parameters:</label>
+              <div class="col-sm-5">
+                <textarea class="form-control" id="query-parameters"></textarea>
+              </div>
+            </div>
+            
+            <div id="arguments-input-container">
+              <label class="control-label col-sm-2" for="arguments">Arguments:</label>
+              <div class="col-sm-5">
+                <textarea class="form-control" id="arguments"></textarea>
+              </div>
+            </div>
+    
+            <div id="return-input-container">
+              <label class="control-label col-sm-2" for="return">Return:</label>
+              <div class="col-sm-5">
+                <textarea class="form-control" id="return"></textarea>
+              </div>
+            </div>
+            
+            <button type="submit" id="submit-docform">Generate</button>
+          </div>
+        </form>
       </div>
-      <div class="form-group">
-        <!-- Parameters-->
-        <label for="method">Name:</label><br>
-        <input type="text" id="name" name="name"><br>
-        <label for="method">Description:</label><br>
-        <input type="text" id="description" name="description"><br>
-        <label for="method">Method:</label><br>
-        <input type="text" id="method" name="method"><br>
-        <label for="route-uri">Route URI:</label><br>
-        <input type="text" id="route-uri" name="route-uri"><br>
-        <label for="query-parameters">Query Parameters:</label><br>
-        <input type="text" id="query-parameters" name="query-parameters"><br>
-        <label for="arguments">Arguments:</label><br>
-        <input type="text" id="arguments" name="arguments"><br>
-        <label for="return">Return:</label><br>
-        <input type="text" id="return" name="return"><br>
-        <button type="submit" id="submit-docform">Generate</button>
+      <div id="column">
+        <h4 id="output-header">Output:</h4>
+        <div id="output-display-box">
+          Generated documentation will appear here
+        </div>
       </div>
-    </form>
+    </div>
+    
 
     <script>var exports = {};</script>
-    <script src="../dist/renderer.js"></script>
+    <script src="../dist/gui/src/renderer.js"></script>
   </body>
 </html>
